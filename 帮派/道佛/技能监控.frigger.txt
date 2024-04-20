@@ -1,0 +1,110 @@
+//事件：新提示信息
+//触发条件：{"关键字":"缠字决|绵绵而上,使出一招“金蛇狂舞|突然金芒大盛|中指一按|冷笑数声|双掌不断拍出|破气式|一股劲气无声无息刺向|逆转九阴，双眼血红，状若疯魔，竟自不加防守，一味凌厉进攻！|释放八荒真气|默运移花接木神功|将内力聚于手指，平平淡淡毫无花俏地|咬破舌尖，大喝一声，全身弥漫起一片血雾！！|化水为冰|中指按出"}
+// ~silent
+// 新提示信息：缠字决|绵绵而上,使出一招“金蛇狂舞|突然金芒大盛|中指一按|冷笑数声|双掌不断拍出|破气式|一股劲气无声无息刺向|逆转九阴，双眼血红，状若疯魔，竟自不加防守，一味凌厉进攻！|释放八荒真气|默运移花接木神功|将内力聚于手指，平平淡淡毫无花俏地|咬破舌尖，大喝一声，全身弥漫起一片血雾！！|化水为冰|中指按出
+@cmdDelay 0
+
+($n) = 0
+//太极剑-缠字诀
+@js ($s_chan) = "(text)".indexOf("使出太极剑【缠字决】")
+[if] (s_chan) != -1
+    @js ($name) = "(text)".match("<mag>([^%]+)使出太极剑【缠字决】")[1]
+    ($skill) = 缠字诀
+
+//金蛇剑-金蛇狂舞
+@js ($s_wu) = "(text)".indexOf("绵绵而上,使出一招“金蛇狂舞")
+[if] (s_wu) != -1
+    @js ($name) = "(text)".match("<hiy>([^%]+)身随剑走，绵绵而上,使出一招“金蛇狂舞")[1]
+    ($skill) = 金蛇狂舞
+
+//金蛇剑-金蛇追魂
+@js ($s_hun) = "(text)".indexOf("突然金芒大盛，一道金光破空直袭")
+[if] (s_hun) != -1
+    @js ($name) = "(text)".match("<hiy>([^%]+)手中.*突然金芒大盛")[1]
+    ($skill) = 金蛇追魂
+
+//六脉神剑-无形剑气
+@js ($s_liu) = "(text)".indexOf("中指一按，一股凌厉无伦")
+[if] (s_liu) != -1
+    @js ($name) = "(text)".match("<hiy>([^%]+)中指一按，一股凌厉无伦")[1]
+    ($skill) = 无形剑气
+
+//九阴白骨爪
+@js ($s_duo) = "(text)".indexOf("冷笑数声，手指微微弯曲成爪")
+[if] (s_duo) != -1
+    @js ($name) = "(text)".match("<hiy>([^%]+)冷笑数声，手指微微弯曲成爪")[1]
+    ($skill) = 夺魄
+
+//大嵩阳神掌-无影掌
+@js ($s_song) = "(text)".indexOf("双掌不断拍出")
+[if] (s_song) != -1
+    @js ($name) = "(text)".match("<hic>([^%]+)双掌不断拍出")[1]
+    ($skill) = 无影掌
+
+//独孤九剑-破气诀
+@js ($s_poqi) = "(text)".indexOf("施出独孤九剑「破气式」")
+[if] (s_poqi) != -1
+    @js ($name) = "(text)".match("<hib>([^%]+)施出独孤九剑「破气式」")[1]
+    ($skill) = 破气诀
+
+//九阴神功-追魂
+@js ($s_zhui) = "(text)".indexOf("默运九阴神功，一股劲气无声无息刺向")
+[if] (s_zhui) != -1
+    @js ($name) = "(text)".match("([^%]+)默运九阴神功，一股劲气无声无息刺向")[1]
+    ($skill) = 追魂
+
+//九阴神功-逆转九阴
+@js ($s_jiuyin) = "(text)".indexOf("逆转九阴，双眼血红，状若疯魔，竟自不加防守，一味凌厉进攻")
+[if] (s_jiuyin) != -1
+    @js ($name) = "(text)".match("([^%]+)逆转九阴，双眼血红，状若疯魔，竟自不加防守，一味凌厉进攻")[1]
+    ($skill) = 逆转九阴
+
+//不老长春功-唯我独尊
+@js ($s_chidun) = "(text)".indexOf("踏步向前，释放八荒真气")
+[if] (s_chidun) != -1
+    @js ($name) = "(text)".match("<HIW>([^%]+)踏步向前，释放八荒真气")[1]
+    ($skill) = 迟钝
+
+//移花接木-移花
+@js ($s_yihua) = "(text)".indexOf("默运移花接木神功")
+[if] (s_yihua) != -1
+    @js ($name) = "(text)".match("<mag>([^%]+)默运移花接木神功")[1]
+    ($skill) = 移花
+
+//参合指-参合之殇
+@js ($s_canhe) = "(text)".indexOf("将内力聚于手指，平平淡淡毫无花俏地")
+@js ($s_canhe1) = "(text)".indexOf("<hiy>")
+[if] (s_canhe) != -1 && (s_canhe1) != -1
+    @js ($name) = "(text)".match("<hiy>([^%]+)将内力聚于手指，平平淡淡毫无花俏地")[1]
+    ($skill) = 参合之殇
+
+//血刀-嗜血
+@js ($s_shixue) = "(text)".indexOf("咬破舌尖，大喝一声，全身弥漫起一片血雾")
+[if] (s_shixue) != -1
+    @js ($name) = "(text)".match("([^%]+)咬破舌尖，大喝一声，全身弥漫起一片血雾")[1]
+    ($skill) = 嗜血
+
+//天山六阳掌-生死符
+@js ($s_zhong) = "(text)".indexOf("化水为冰，凝于掌中")
+[if] (s_zhong) != -1
+    @js ($name) = "(text)".match("([^%]+)化水为冰，凝于掌中")[1]
+    ($skill) = 生死符
+
+//一指禅-惊魔一指
+@js ($s_jing) = "(text)".indexOf("中指按出，一股锐利的杀气")
+[if] (s_jing) != -1
+    @js ($name) = "(text)".match("<hiy>([^%]+)大喝一声，中指按出，一股锐利的杀气")[1]
+    ($skill) = 惊魔一指
+[if] (name) != null
+    @js ($name) = '(name)'.match(/[\u4e00-\u9fa5]+/)
+//信息显示
+[if] (Gangwar_monitor_name) != null
+    @js ($player_l) = '(Gangwar_monitor_name)'.split(",").length
+    [while](n) < (player_l)
+        @js ($name_0) = '(Gangwar_monitor_name)'.split(",")[(n)]
+        [(name) == (name_0)] [exit]
+        ($n) = (n) + 1
+[if] (name) != null
+    ($info) = (:hour):(:minute):(:second) (name) => (skill)
+    tm (info)
+    @print (info)
