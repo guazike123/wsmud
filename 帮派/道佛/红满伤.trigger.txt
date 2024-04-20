@@ -1,0 +1,20 @@
+//~silent
+//人名：独孤败天
+//百分比值：12 (武当少林可填8)
+[if] (:room) == 华山派-客厅 && (:combating) == true
+    @off 帮战轮回
+    @js messageClear()
+    pty 上古剑神 独孤败天 造成伤害：(percent)
+    @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br><ord>上古剑神</ord> 独孤败天 造成伤害：<hiy>(percent)</hiy><br> <hiw>处理方案：</hiw><br>等待帮战结束......<br><hiw>===================</hiw>
+    @js $('#Gangwar').html(`⚔️<hiy>等待帮派战结束......</hiy>`)
+    @until (:living) == false || (:combating) == false
+    @wait 1000
+    relive;relive
+    @until (:mpPer) >= 0.4
+    stopstate
+    [while] (:room) != 华山派-客厅
+        stopstate
+        $to 华山派-客厅
+        @wait 2000
+    [{r独孤败天的尸体}? != null] get all from {r独孤败天}?
+    liaoshang

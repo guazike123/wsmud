@@ -1,0 +1,360 @@
+//~silent
+//五区-道佛
+//频道：帮派
+//关键字：查询帮派副本|进攻武当派。|进攻华山派。
+
+//配置判断
+[if] (Gangwar_config) == null
+    @js alert("检测到未进行手动菜单配置，无法启动")
+    [exit]
+
+//自动判断是否已经过去一天，重置自动帮战常量数据
+[(Gangwar_date) == null] ($Gangwar_date) = (:date)
+[if] (:date) != (Gangwar_date) && (:hour) >= 5
+    ($Gangwar_date) = (:date)
+    ($DPList) = null
+    ($Gangwar) = off
+    ($Percent_2) = 0
+    ($Percent_1) = 0
+    ($Percent_bang) = 0
+    @off 橙满伤
+    @off 红满伤
+    @on 帮战开始
+    @on 帮战结束
+    @off 帮战叫杀
+    @off 帮战轮回
+    @off 血量监控
+    @off 技能监控
+    @off 帝魄记录
+    @off 帝魄查询
+
+//角色状态判断
+[if] (:room 副本区域,忧愁谷,襄阳城,古大陆,皇城,运镖) == true || (:state)==推演 || (Gangwar) == on
+    [exit]
+$stopallauto
+($ID_1) = null
+($ID_2) = null
+($Gangwar) = on
+($hour) = (:hour)
+($minute) = (:minute)
+($second) = (:second)
+[(Player) == null]($Player) = (:name)
+
+//激活对象判断
+[if] (Gangwar_specify_objects) != null
+    ($n) = 0
+    @js ($specify_objects_l) = '(Gangwar_specify_objects)'.split(",").length
+    [while] true
+        @js ($specify_objects_name) = '(Gangwar_specify_objects)'.split(",")[(n)]
+        [if] (name) == (specify_objects_name) || (name) == (:name)
+            [break]
+        [if] (n) == (specify_objects_l)
+            ($Gangwar) = off
+            pty (name)于(hour)点(minute)分(second)秒激活(Gangwar_name)的自动帮战系统，非指定激活对象已停止本次自动帮战系统运行。
+            [(Gangwar_report) == 是] $tts (name)于(hour)点(minute)分(second)秒激活(Gangwar_name)的自动帮战系统，非指定激活对象已停止本次自动帮战系统运行。
+            [(Gangwar_push) == 是] @push (name)于(hour)点(minute)分(second)秒激活(Gangwar_name)的自动帮战系统，非指定激活对象已停止本次自动帮战系统运行。
+            [exit]
+        @await 500
+        ($n) = (n) + 1
+
+tm (name)于(hour)点(minute)分(second)秒激活(Gangwar_name)的自动帮战系统
+[(Gangwar_report) == 是] $tts (name)于(hour)点(minute)分(second)秒激活(Gangwar_name)的自动帮战系统
+
+//帮战副本查询倒计时
+@js $('#Gangwar').remove()
+@js $(`.state-bar`).before(`<div id="Gangwar">开始倒计时</div>`)
+($waittime) = (Gangwar_waittime)
+[while] (waittime) >= 1
+    @wait 1000
+    ($waittime) = (waittime)-1
+    @js $('#Gangwar').html(`⏳强制等待：<hic>(waittime)</hic> 秒`)
+@js $('#Gangwar').html(`前往 <hiy>帮派驻地</hiy> 查询相关信息`)
+@until (:combating) == false
+
+//查询帮战副本信息
+[while] (:room) != 帮会-大院
+    stopstate
+    $to 帮会-大院
+    @wait 2000
+jrfb {r帮会管理员}?
+@js ($bpz_1) = $("span[cmd='jh fam 1 start']").text()
+@js ($bpz_3) = $("span[cmd='jh fam 3 start']").text()
+[if] (bpz_1) != null && (bpz_3) == null
+    ($Gangwar_target) = 武当派
+[else if] (bpz_1) == null && (bpz_3) != null
+    ($Gangwar_target) = 华山派
+[else if] (bpz_1) == null && (bpz_3) == null
+    $startallauto
+    (Gangwar_end)
+    ($Gangwar) = off
+    @js $('#Gangwar').remove()
+    tm 当前未开启可以自动处理的帮派副本
+    [exit]
+
+//设置开关记录
+@js $("span[command='setting']").click()
+@js ($Gangwar_kg10) = $(".switch-text").eq('10').text().trim()
+@js ($Gangwar_kg13) = $(".switch-text").eq('13').text().trim()
+@js ($Gangwar_kg14) = $(".switch-text").eq('14').text().trim()
+
+[if] (Gangwar_target) == 武当派 && (Gangwar_hio) == 是
+    stopstate
+    $eq (Gangwar_hio_EquipmentSuit)
+    @await 1000
+    $eqskill (Gangwar_hio_EquipmentSuit)
+    @await 1000
+    [(Gangwar_autopfm) == 是]$startpfm
+    [(Gangwar_autopfm) == 否]$stoppfm
+    [(Gangwar_perform) != null]$stopautopfm (Gangwar_perform);
+    @js $('#Gangwar').html(`准备前往目的地：⛩️<hio>(Gangwar_target)</hio>`)
+//橙——关闭指定触发
+    [if] (Gangwar_hio_triggers) != null
+        @js ($tgs)=var ts=("\""+"(Gangwar_hio_triggers)"+"\"").replace(/，/g,",");ts.replace(/,/g,"\",\"").split(",")
+        @js ($tl)=[(tgs)].length
+        ($num)=0
+        [while] (num)<(tl)
+            @js ($t)=[(tgs)][(num)]
+            @js ToRaid.perform(`@off (t)`);
+            ($num)=(num)+1
+    [if] (Gangwar_hio_triggers) != null
+        ($inof_triggers) = 关闭触发：<hic>(Gangwar_hio_triggers)</hic><br>关闭自动Boss及喜宴，准备参加帮战......
+    [else if] (Gangwar_hio_triggers) == null
+        ($inof_triggers) = 关闭自动Boss及喜宴，准备参加帮战......
+    @js messageClear()
+    tm ⚔️帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：⛩️(Gangwar_target)
+    [(Gangwar_report) == 是] $tts (:name)请注意，帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：(Gangwar_target)。
+    [(Gangwar_push) == 是] @push (:name)请注意，帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：(Gangwar_target)。
+    @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派(Gangwar_name)于<yel>(hour)点(minute)分(second)秒</yel>进攻 ⛩️<hio>(Gangwar_target)</hio><br> <hiw>处理方案：</hiw><br>使用<hig> (Gangwar_power) </hig>模式<br>(inof_triggers)<br><hiw>===================</hiw>
+
+    setting no_message 1
+    setting no_combatmsg 1
+    setting no_mcmsg 1
+    [if] (Gangwar_dp) == 是
+        @on 帝魄记录
+        @on 帝魄查询
+        setting no_message 0
+    [else]
+        @off 帝魄记录
+        @off 帝魄查询
+    [if] (Gangwar_monitor) == 是
+        @on 技能监控
+        setting no_mcmsg 0
+        setting no_message 0
+        setting no_combatmsg 0
+    [else]
+        @off 技能监控
+    [(Gangwar_npchp) == 是]@on 血量监控
+    @on 橙满伤
+    @on 帮战轮回
+    @renew
+    [while] (:room) != 武当派-后山小院
+        stopstate
+        $to 武当派-后山小院
+        @wait 1000
+    ($ID_bang) = {r邋遢真人}?
+    ($ID_1) = {r武当派长老}?
+    ($ID_2) = {r武当派长老}?# obj.id == "(ID_1)" #
+    ($Name_1) = (:findName (ID_1))
+    ($Name_2) = (:findName (ID_2))
+    [(Name_1) == null] ($Name_1) = 意外死亡
+    [(Name_2) == null] ($Name_2) = 意外死亡
+    ($Gangwar_weapon) = (:eq0)
+    [if] (Gangwar_nei_0) == 是 && (Gangwar_nei_1) == null
+        ($Gangwar_nei) = (:kf_nei)
+        enable force none
+    [else if] (Gangwar_nei_0) == 否 && (Gangwar_nei_1) != null
+        ($Gangwar_nei) = (:kf_nei)
+        enable force (Gangwar_nei_1)
+    ($waitkill) = (Gangwar_waitkill)
+    [if] (waitkill) != null
+        pty 预计(waitkill)秒后开始攻击
+        @js $('#Gangwar').html(`⏳预计 <hic>(waitkill)</hic> 秒后开始攻击`)
+        [while] (waitkill) >= 1
+            ($waitkill) = (waitkill) - 1
+            @wait 1000
+            @js $('#Gangwar').html(`⏳预计 <hic>(waitkill)</hic> 秒后开始攻击`)
+    <-recordGains
+    @toolbar pack
+    ($Gangwar_beforemoney) = (:money)
+    [while] true
+        ($id_bang) = {r邋遢真人}?
+        @js $(".content-message").find("pre").empty()
+        look (id_bang)
+        @js ($sanfeng_sword) = $("[cmd*='(id_bang)']").find("hio").eq("0").text().replace(/\n/g,"")
+        [if] (sanfeng_sword) == 真武剑
+            ($waitkill) = (Gangwar_waitkill)
+            pty ⚠️张三丰未卸载武器，(waitkill)秒后重新检测
+            [while] (waitkill) >= 1
+                ($waitkill) = (waitkill) - 1
+                @wait 1000
+                @js $('#Gangwar').html(`⚠️张三丰未卸载武器，<hic>(waitkill)</hic> 秒后重新检测`)
+        ["(id_bang)" == "null" || (sanfeng_sword) != 真武剑] [break]
+    @js $('#Gangwar').html(`⚔️<hio>准备攻击</hio>`)
+    [while] true
+        @until  (:room) == 武当派-后山小院
+        ($id_bang) = {r邋遢真人}?
+        ($id_1) = {r武当派长老}?
+        ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+        [if] "(id_2)" != "null"
+            ($name) = (:findName (id_2))
+            [if] (:hp (id_2)) > 12000000
+                ($MPnpc) = (id_2)
+                kill (id_2);kill (id_2)
+                pty ⚔️开始攻击：武当派长老 (name)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+            [else]
+                @js $('#Gangwar').html(`<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，延后叫杀`)
+        [else if] "(id_2)" == "null" && "(id_1)" != "null"
+            ($name) = (:findName (id_1))
+            [if] (:hp (id_1)) > 12000000
+                ($MPnpc) = (id_1)
+                kill (id_1);kill (id_1)
+                pty ⚔️开始攻击：武当派长老 (name)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+            [else]
+                @js $('#Gangwar').html(`<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，延后叫杀`)
+        [else if] "(id_2)" == "null" && "(id_1)" == "null"
+            [if] (:hp (id_bang)) > 30000000
+                ($MPnpc) = (id_bang)
+                kill (id_bang);kill (id_bang)
+                pty ⚔️开始攻击：邋遢真人 张三丰
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+            [else]
+                @js $('#Gangwar').html(`<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，延后叫杀`)
+        [else if] "(id_bang)" == "null" && (:room) == 武当派-后山小院
+            @print ⚔️攻击门派：⛩️<hio>武当派</hio> ☠️<hir>灭门</hir>☠️
+            [exit]
+        [(Gangwar) == off] [exit]
+        [(:combating) == true] [break]
+        @await 3000
+    [if] (Gangwar_power) == 菜鸡
+        @on 帮战叫杀
+    [else]
+        @off 帮战叫杀
+[else if] (Gangwar_target) == 武当派 && (Gangwar_hio) != 是
+    $startallauto
+    (Gangwar_end)
+    ($Gangwar) = off
+    @js messageClear()
+    @js $('#Gangwar').remove()
+    tm ⚔️帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：⛩️(Gangwar_target)
+    [(Gangwar_report) == 是] $tts (:name)请注意，帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：(Gangwar_target)，根据设置不参加。
+    [(Gangwar_push) == 是] @push (:name)请注意，帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：(Gangwar_target)，根据设置不参加。
+    @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派(Gangwar_name)于<yel>(hour)点(minute)分(second)秒</yel>进攻 ⛩️<hio>(Gangwar_target)</hio><br> <hiw>处理方案：</hiw><br>根据设置不参加......<br><hiw>===================</hiw>
+    [exit]
+
+[if] (Gangwar_target) == 华山派
+    @toolbar jh
+    @js $('span[command=tasks]').click()
+    @await 1000
+    @js ($taskT) = $(".dialog-tasks").find(".task-desc").eq("0").text().replace(/\n/g,"")
+    @js ($test) = "(taskT)".match(/师门任务/)
+    [if] (test) == null
+        ($num) = 1
+    [else]
+        ($num) = 0
+    @js ($taskAll) = $(".dialog-tasks").find(".task-desc").eq("(num)").text().replace(/\n/g,"")
+    ($num) = (num) + 1
+
+//门派BOSS
+    ($mpb) = "(taskAll)".match(/尚未挑战门派BOSS/)
+
+    [if] (mpb) != null && (Gangwar_hir) == 是
+        stopstate
+        $eq 0
+        @await 1000
+        $stoppfm
+        $eqskill 0
+        @await 1000
+        $eq (Gangwar_hir_EquipmentSuit)
+        @await 1000
+        $eqskill (Gangwar_hir_EquipmentSuit)
+        @await 1000
+        
+        @js $('#Gangwar').html(`准备前往目的地：⛩️<hio>(Gangwar_target)</hio>`)
+        [if] (Gangwar_hio_triggers) != null
+                @js ($tgs)=var ts=("\""+"(Gangwar_hio_triggers)"+"\"").replace(/，/g,",");ts.replace(/,/g,"\",\"").split(",")
+                @js ($tl)=[(tgs)].length
+                ($num)=0
+                [while] (num)<(tl)
+                    @js ($t)=[(tgs)][(num)]
+                    @js ToRaid.perform(`@off (t)`);
+                    ($num)=(num)+1
+        [if] (Gangwar_hir_triggers) != null
+            ($inof_triggers) = 关闭触发：<hic>(Gangwar_hir_triggers)</hic><br>关闭自动Boss及喜宴，准备参加帮战......
+        [else if] (Gangwar_hir_triggers) == null
+            ($inof_triggers) = 关闭自动Boss及喜宴，准备参加帮战......
+        @js messageClear()
+        tm ⚔️帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：⛩️(Gangwar_target)
+        [(Gangwar_report) == 是] $tts (:name)请注意，帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：(Gangwar_target)。
+        [(Gangwar_push) == 是] @push (:name)请注意，帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：(Gangwar_target)。
+        @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派(Gangwar_name)于<yel>(hour)点(minute)分(second)秒</yel>进攻 ⛩️<hio>(Gangwar_target)</hio><br> <hiw>处理方案：</hiw><br>(inof_triggers)<br><hiw>===================</hiw>
+
+        [while] (:room) != 华山派-客厅
+            stopstate
+            $to 华山派-客厅
+        setting no_message 1
+        setting no_combatmsg 1
+        setting no_mcmsg 1
+        [if] (Gangwar_dp) == 是
+            @on 帝魄记录
+            @on 帝魄查询
+            setting no_message 0
+        [else]
+            @off 帝魄记录
+            @off 帝魄查询
+        [if] (Gangwar_monitor) == 是
+            @on 技能监控
+            setting no_combatmsg 0
+            setting no_mcmsg 0
+        [else]
+            @off 技能监控
+        @on 帮战轮回
+        @on 红满伤
+        @wait 2000
+        <-recordGains
+        @toolbar pack
+        ($Gangwar_beforemoney)=(:money)
+        @js $('#Gangwar').html(`等待 <ord>上古剑神</ord> 独孤败天 出现`)
+        [while] (:combating) == false
+            [if] {r独孤败天}? != null
+                [if] (:kf_nei) == jiuyinshengong
+                    kill {r独孤败天}?;@perform force.cui
+                    [break]
+                [else]
+                    kill {r独孤败天}?
+                    [break]
+            [if] (:status xuruo) == true || (:room) != 华山派-客厅
+                [break]
+            @wait 10000
+        @js $('#Gangwar').html(`开始攻击：<ord>上古剑神</ord> 独孤败天`)
+    [else if] (mpb) == null && (Gangwar_hir) == 是
+        $startallauto
+        (Gangwar_end)
+        ($Gangwar) = off
+        @js messageClear()
+        @js $('#Gangwar').remove()
+        tm ⚔️帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：⛩️(Gangwar_target)
+        [(Gangwar_report) == 是] $tts (:name)请注意，帮派(Gangwar_name)开始进攻(Gangwar_target)，本周已完成门派Boss任务，不再参加。
+        [(Gangwar_push) == 是] @push (:name)请注意，帮派(Gangwar_name)开始进攻(Gangwar_target)，本周已完成门派Boss任务，不再参加。
+        @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派(Gangwar_name)于<yel>(hour)点(minute)分(second)秒</yel>进攻 ⛩️<hio>(Gangwar_target)</hio><br> <hiw>处理方案：</hiw><br>本周已完成门派Boss任务，不再参加......<br><hiw>===================</hiw>
+    [else if] (mpb) != null && (Gangwar_hir) == 否
+        $startallauto
+        (Gangwar_end)
+        ($Gangwar) = off
+        @js messageClear()
+        @js $('#Gangwar').remove()
+        tm ⚔️帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：⛩️(Gangwar_target)
+        [(Gangwar_report) == 是] $tts (:name)请注意，帮派(Gangwar_name)开始进攻(Gangwar_target)，本周未完成门派Boss任务，根据设置不参加。
+        [(Gangwar_push) == 是] @push (:name)请注意，帮派(Gangwar_name)开始进攻(Gangwar_target)，本周未完成门派Boss任务，根据设置不参加。
+        @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派(Gangwar_name)于<yel>(hour)点(minute)分(second)秒</yel>进攻 ⛩️<hio>(Gangwar_target)</hio><br> <hiw>处理方案：</hiw><br>本周未完成门派Boss任务，根据设置不参加......<br><hiw>===================</hiw>
+    [else if] (mpb) == null && (Gangwar_hir) == 否
+        $startallauto
+        (Gangwar_end)
+        ($Gangwar) = off
+        @js messageClear()
+        @js $('#Gangwar').remove()
+        tm ⚔️帮派(Gangwar_name)于(hour)点(minute)分(second)秒开始进攻：⛩️(Gangwar_target)
+        [(Gangwar_report) == 是] $tts (:name)请注意，帮派(Gangwar_name)开始进攻(Gangwar_target)，本周已完成门派Boss任务，根据设置不参加。
+        [(Gangwar_push) == 是] @push (:name)请注意，帮派(Gangwar_name)开始进攻(Gangwar_target)，本周已完成门派Boss任务，根据设置不参加。
+        @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派(Gangwar_name)于<yel>(hour)点(minute)分(second)秒</yel>进攻 ⛩️<hio>(Gangwar_target)</hio><br> <hiw>处理方案：</hiw><br>本周已完成门派Boss任务，根据设置不参加......<br><hiw>===================</hiw>

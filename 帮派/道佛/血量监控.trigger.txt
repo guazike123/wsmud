@@ -1,0 +1,116 @@
+//~silent
+//五区-道佛
+// 武当派长老|张三丰 气血 低于 百分比 60
+($id_bang) = {r邋遢真人}?
+($id_1) = {r武当派长老}?
+($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+($name) = (:findName (id))
+[if] (:combating) == true && (:room) == 武当派-后山小院 && (MPnpc) != null && (:eq0) != null
+    [if] "(id)" == "(id_2)" && "(MPnpc)" == "(id)"
+        [(Gangwar_autopfm) == 是]$stoppfm
+        [(Gangwar_power) == 菜鸡]@off 帮战叫杀
+        [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+            uneq (Gangwar_weapon)
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，卸载武器-暂停施法`)
+        [else]
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，暂停施法`)
+        @until (:hp (id)) >= 14000000 || {(name)的尸体}? != null || "(MPnpc)" != "(id_2)"
+        ($id_bang) = {r邋遢真人}?
+        ($id_1) = {r武当派长老}?
+        ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+        [(Gangwar_autopfm) == 是] $startpfm
+        [(Gangwar_power) == 菜鸡] @on 帮战叫杀
+        [(Gangwar_unloadweapon) == 是 && (:eq0) == null] eq (Gangwar_weapon)
+        [if] (:hp (id)) >= 14000000 && "(MPnpc)" == "(id_2)"
+            @js $('#Gangwar').html(`⚔️<hio>武当派长老</hio> <hir>(name)</hir> 血量恢复，开始攻击`)
+        [else if] {(name)的尸体}? != null || "(MPnpc)" != "(id_2)"
+            [if] "(id_1)" != "null" && (Percent_1) == 0
+                kill (id_1)[2]
+                ($MPnpc) = (id_1)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_1)</hir>`)
+            [else if] "(id_bang)" != "null" && (Percent_bang) == 0
+                kill (id_bang)[2]
+                ($MPnpc) = (id_bang)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(id)" == "(id_1)" && "(id)" == "(ID_1)" && "(MPnpc)" == "(id)"
+        [(Gangwar_autopfm) == 是]$stoppfm
+        [(Gangwar_power) == 菜鸡]@off 帮战叫杀
+        [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+            uneq (Gangwar_weapon)
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，卸载武器-暂停施法`)
+        [else]
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，暂停施法`)
+        @until (:hp (id)) >= 14000000 || {(name)的尸体}? != null || "(MPnpc)" != "(id_1)"
+        ($id_bang) = {r邋遢真人}?
+        ($id_1) = {r武当派长老}?
+        ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+        [(Gangwar_autopfm) == 是] $startpfm
+        [(Gangwar_power) == 菜鸡] @on 帮战叫杀
+        [(Gangwar_unloadweapon) == 是 && (:eq0) == null] eq (Gangwar_weapon)
+        [if] (:hp (id)) >= 14000000 && "(MPnpc)" == "(id_1)"
+            @js $('#Gangwar').html(`⚔️<hio>武当派长老</hio> <hir>(name)</hir> 血量恢复，开始攻击`)
+        [else if] {(name)的尸体}? != null || "(MPnpc)" != "(id_1)"
+            [if] "(id_2)" != "null" && (Percent_2) == 0
+                kill (id_2)[2]
+                ($MPnpc) = (id_2)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+            [else if] "(id_bang)" != "null" && (Percent_bang) == 0
+                kill (id_bang)[2]
+                ($MPnpc) = (id_bang)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(id)" == "(id_1)" && "(id)" == "(ID_2)" && "(MPnpc)" == "(id)"
+        [(Gangwar_autopfm) == 是]$stoppfm
+        [(Gangwar_power) == 菜鸡]@off 帮战叫杀
+        [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+            uneq (Gangwar_weapon)
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，卸载武器-暂停施法`)
+        [else]
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，暂停施法`)
+        @until (:hp (id)) >= 14000000 || {(name)的尸体}? != null || "(MPnpc)" != "(id_1)"
+        ($id_bang) = {r邋遢真人}?
+        ($id_1) = {r武当派长老}?
+        ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+        [(Gangwar_autopfm) == 是] $startpfm
+        [(Gangwar_power) == 菜鸡] @on 帮战叫杀
+        [(Gangwar_unloadweapon) == 是 && (:eq0) == null] eq (Gangwar_weapon)
+        [if] (:hp (id)) >= 14000000 && "(MPnpc)" == "(id_1)"
+            @js $('#Gangwar').html(`⚔️<hio>武当派长老</hio> <hir>(name)</hir> 血量恢复，开始攻击`)
+        [else if] {(name)的尸体}? != null || "(MPnpc)" != "(id_1)"
+            [if] "(id_1)" != "null" && "(id_1)" == "(ID_2)" && (Percent_2) == 0
+                kill (id_1)[2]
+                ($MPnpc) = (id_1)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+            [else if] "(id_bang)" != "null" && (Percent_bang) == 0
+                kill (id_bang)[2]
+                ($MPnpc) = (id_bang)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(MPnpc)" == "(id)" && "(id)" == "(id_bang)"
+        [(Gangwar_autopfm) == 是]$stoppfm
+        [(Gangwar_power) == 菜鸡]@off 帮战叫杀
+        [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+            uneq (Gangwar_weapon)
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，卸载武器-暂停施法`)
+        [else]
+            @js $('#Gangwar').html(`⚠️攻击目标：<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，暂停施法`)
+        @until (:hp (id_bang)) >= 35000000 || {(name)的尸体}? != null || "(MPnpc)" != "(id_bang)"
+        ($id_bang) = {r邋遢真人}?
+        ($id_1) = {r武当派长老}?
+        ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+        [(Gangwar_autopfm) == 是] $startpfm
+        [(Gangwar_power) == 菜鸡] @on 帮战叫杀
+        [(Gangwar_unloadweapon) == 是 && (:eq0) == null] eq (Gangwar_weapon)
+        [if] (:hp (id)) >= 35000000 && "(MPnpc)" == "(id_bang)"
+            @js $('#Gangwar').html(`⚔️<hio>邋遢真人</hio> <hir>张三丰</hir> 血量恢复，开始攻击`)
+        [else if] {(name)的尸体}? != null || "(MPnpc)" != "(id_bang)"
+            [if] "(id_2)" != "null" && (Percent_2) == 0
+                kill (id_2)[2]
+                ($MPnpc) = (id_2)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+            [else if] "(id_1)" != "null" && "(id)" == "(ID_2)" && (Percent_2) == 0
+                kill (id_1)[2]
+                ($MPnpc) = (id_1)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+            [else if] "(id_1)" != "null" && "(id)" == "(ID_1)" && (Percent_1) == 0
+                kill (id_1)[2]
+                ($MPnpc) = (id_1)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_1)</hir>`)

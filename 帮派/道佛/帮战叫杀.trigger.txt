@@ -1,0 +1,72 @@
+//~silent
+//五区-道佛
+//新增 faint 他人
+
+($id_bang) = {r邋遢真人}?
+($id_1) = {r武当派长老}?
+($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+($name)= (:findName (id))
+[(:room) != 武当派-后山小院] [exit]
+[if] "(id)" == "(id_2)" && "(MPnpc)" != "(id_2)" && (Percent_2) == 0
+    kill (id);kill (id)
+    ($MPnpc) = (id_2)
+    tm (:hour):(:minute):(:second)-⚔️开始攻击：武当派长老 (name)
+    @js $('#Gangwar').html(`(:hour):(:minute):(:second)-⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+[else if] "(id)" == "(id_1)" && "(MPnpc)" != "(id_1)" && (Percent_2) == 0 && "(id)" == "(ID_2)"
+    kill (id);kill (id)
+    ($MPnpc) = (id_1)
+    tm (:hour):(:minute):(:second)-⚔️开始攻击：武当派长老 (name)
+    @js $('#Gangwar').html(`(:hour):(:minute):(:second)-⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+[else if] "(id)" == "(id_1)" && "(MPnpc)" != "(id_1)" && (Percent_1) == 0 && "(id)" == "(ID_1)"
+    kill (id);kill (id)
+    ($MPnpc) = (id_1)
+    tm (:hour):(:minute):(:second)-⚔️开始攻击：武当派长老 (name)
+    @js $('#Gangwar').html(`(:hour):(:minute):(:second)-⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+[else if] "(id)" == "(id_bang)" && "(MPnpc)" != "(id_bang)" && (Percent_bang) == 0
+    kill (id);kill (id)
+    ($MPnpc) = (id_bang)
+    tm (:hour):(:minute):(:second)-⚔️开始攻击：邋遢真人 张三丰
+    @js $('#Gangwar').html(`(:hour):(:minute):(:second)-⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+
+[if] (:mpPer) < 0.3
+    [(:room) != 武当派-后山小院 || (:living) == false] [exit]
+    go south
+    [(:room) != 武当派-林间小径] [exit]
+    @until (:combating) == false
+    $to 扬州城-武庙
+    @dazuo
+    @liaoshang
+    @off 帮战叫杀
+    [while] (:room) != 武当派-后山小院
+        $to 武当派-后山小院
+        @await 2000
+    [{r张三丰的尸体}? != null] get all from {r张三丰}?
+    [{r(Name_1)的尸体}? != null] get all from {r(Name_1)}?
+    [{r(Name_2)的尸体}? != null] get all from {r(Name_2)}?
+    @until (:status xuruo) == false
+    ($id_bang) = {r邋遢真人}?
+    ($id_1) = {r武当派长老}?
+    ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+    [if] "(id_2)" != "null" && (Percent_2) == 0
+        kill (id_2)[2]
+        ($MPnpc) = (id_2)
+        pty ⚔️开始攻击：武当派长老 (Name_2)
+        @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+    [else if] "(id_1)" != "null" && "(id)" == "(ID_2)" && (Percent_2) == 0
+        kill (id_1)[2]
+        ($MPnpc) = (id_1)
+        ($name)= (:findName (id_1))
+        pty ⚔️开始攻击：武当派长老 (name)
+        @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+    [else if] "(id_1)" != "null" && "(id)" == "(ID_1)" && (Percent_1) == 0
+        kill (id_1)[2]
+        ($MPnpc) = (id_1)
+        ($name)= (:findName (id_1))
+        pty ⚔️开始攻击：武当派长老 (name)
+        @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+    [else if] "(id_bang)" != "null" && (Percent_bang) == 0
+        kill (id_bang)[2]
+        ($MPnpc) = (id_bang)
+        pty ⚔️开始攻击：邋遢真人 张三丰
+        @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    @on 帮战叫杀

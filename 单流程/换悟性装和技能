@@ -1,0 +1,33 @@
+//
+@cmdDelay 1000
+($zb_yifu)  = 练功服,真武道袍
+($zb_xie) = 曙光鞋,真武道靴
+($zb_toubu) = 盘龙簪,涟星的冰玉簪,真武道簪
+($zb_pifeng) = 锦斓袈裟
+($zb_jiezhi) = 掌门扳指
+($zb_xianglian) = 璇玑,学者项链,杨不悔的项链
+($zb_shiping) = 女娲石,花无缺玉佩,龙骨舍利,神龙令
+($zb_huwang) = 朱雀手环,崔莺莺的手镯 
+($zb_yaodai) = 橙峨眉腰,火龙腰带
+($zb_wuqi) = 轩辕剑,飞翼剑,倚天剑
+($zb) = '(zb_yifu)','(zb_xie)','(zb_toubu)','(zb_pifeng)','(zb_jiezhi)','(zb_xianglian)','(zb_shiping)','(zb_huwang)','(zb_yaodai)','(zb_wuqi)'
+@js ($zbl) = [(zb)].length
+
+//脱下全部装备和技能
+$eq 0;@await 1000
+$eqskill 0;@await 1000
+($num1) = 0
+[while] (num1) < (zbl)
+    @js ($bw) = var zz = [(zb)][(num1)];zz=("\""+zz+"\"").replace(/，/g,",");zz.replace(/,/g,"\",\"").split(",")
+    @js ($bwl) = [(bw)].length
+    ($num2)=0
+    [while] (num2) < (bwl)
+        @js ($jtzb) = [(bw)][(num2)]
+        [if] (jtzb) = null
+            [break]
+        [if] {b(jtzb)}? != null
+            eq {b(jtzb)}?
+            [break]
+        ($num2)=(num2) + 1
+    ($num1) = (num1) + 1
+

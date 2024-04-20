@@ -1,0 +1,229 @@
+//~silent
+//五区-道佛
+
+//获取帮派名称
+@js $(`span[command=message]`).click()
+@js $(`span[for=3]`).click()
+@wait 1000
+@js ($Gangwar_name) = $('div[class=party-title]').eq('0').html()
+@js ($Gangwar_name) = '(Gangwar_name)'.match(/[\u4e00-\u9fa5]+/)
+
+($n) = 0
+($update_date) = 〈2023-10-09〉
+($triggers_delete) = 帮战开始,帮战结束,帮战轮回,帮战叫杀,血量监控,技能监控,橙满伤,红满伤,帝魄记录,帝魄查询
+($triggers_Import) = 道佛·帮战开始·触发@6d82545844d7164fc3c4cb30fdb9a399,道佛·帮战结束·触发@bd8def48c5232bf836fe96108ea24fe5,道佛·帮战轮回·触发@b53b6f5716f259530bc7ebd62ebef5e3,道佛·帮战叫杀·触发@e10477142be79138e25e25b73e1f43ff,道佛·血量监控·触发@17c188121b2777adc5812885e5bae22d,道佛·技能监控·触发@d7e2900df036a54a9c13911c4c31f433,道佛·橙满伤·触发@a55d837364ca86737a74fe03c89f37de,道佛·红满伤·触发@4a392c772682f8a5b2cb2f190c9effe6,道佛·帝魄记录·触发@17fe4f549760af465176a043b47afbf9,道佛·帝魄查询·触发@71563b74527f0730354df7f57ac46230
+
+[if] (Gangwar_config) == null
+    ($Gangwar_push) = null
+    ($Gangwar_report) = null
+    ($Gangwar_end) = null
+    ($Gangwar_dp) = null
+    ($Gangwar_monitor) = null
+    ($Gangwar_waittime) = null
+    ($Gangwar_autopfm_0) = null
+    ($Gangwar_dp_fy) = null
+    ($Gangwar_monitor_fy) = null
+    ($Gangwar_dp_print) = null
+    ($Gangwar_monitor_print) = null
+    ($Gangwar_specify_objects) = null
+    ($Gangwar_specify_objects_end) = null
+    ($Gangwar_hio) = null
+    ($Gangwar_run) = null
+    ($Gangwar_nei_0) = null
+    ($Gangwar_nei_1) = null
+    ($Gangwar_npchp) = null
+    ($Gangwar_power) = null
+    ($Gangwar_waitkill) = null
+    ($Gangwar_autopfm) = null
+    ($Gangwar_perform) = null
+    ($Gangwar_unloadweapon) = null
+    ($Gangwar_hio_triggers) = null
+    ($Gangwar_hio_EquipmentSuit) = null
+    ($Gangwar_hir) = null
+    ($Gangwar_hir_triggers) = null
+    ($Gangwar_hir_EquipmentSuit) = null
+//弹窗简介
+@js alert("1、本套触发仅支持武当打橙、华山打红\n2、帮派战开始前进入游戏可以全自动帮战，开始后进入游戏也可以在帮派频道发送关键词『查询帮派副本』手动激活开始运行。\n3、本套触发可有效防止被重复触发，如因个人操作不当造成无法激活或正常运行的情况，可选择恢复默认设置或者初始化帮战系统（详情见相关选项说明）。\n4、第一次设置完成后会自动导入所有帮战触发，所以建议取消本次流程运行，备份并删除自己的帮战相关触发后再重新运行（且忽略最后的三选一，那是出问题才选的），避免造成冲突\n5、相关选项涉及到的武学ID、技能ID如不理解可飞升仙界（772762848）向大佬请教")
+
+//默认参数
+[(Gangwar_update) == null]($Gangwar_update) = 否
+[(Gangwar_push) == null]($Gangwar_push) = 是
+[(Gangwar_report) == null]($Gangwar_report) = 是
+[(Gangwar_end) == null]($Gangwar_end) = $zdwk
+[(Gangwar_dp) == null]($Gangwar_dp) = 否
+[(Gangwar_monitor) == null]($Gangwar_monitor) = 否
+[(Gangwar_waittime) == null]($Gangwar_waittime) = 60
+[(Gangwar_autopfm_0) == null]($Gangwar_autopfm_0) = 是
+[(Gangwar_dp_fy) == null]($Gangwar_dp_fy) = 帮派
+[(Gangwar_monitor_fy) == null]($Gangwar_monitor_fy) = 帮派
+[(Gangwar_dp_print) == null]($Gangwar_dp_print) = 否
+[(Gangwar_monitor_print) == null]($Gangwar_monitor_print) = 否
+
+[(Gangwar_hio) == null]($Gangwar_hio) = 是
+[(Gangwar_nei_0) == null]($Gangwar_nei_0) = 否
+[(Gangwar_npchp) == null]($Gangwar_npchp) = 是
+[(Gangwar_power) == null]($Gangwar_power) = 菜鸡
+[(Gangwar_waitkill) == null]($Gangwar_waitkill) = 120
+[(Gangwar_autopfm) == null]($Gangwar_autopfm) = 是
+[(Gangwar_unloadweapon) == null]($Gangwar_unloadweapon) = 是
+[(Gangwar_hio_EquipmentSuit) == null]($Gangwar_hio_EquipmentSuit) = 1
+
+[(Gangwar_hir) == null]($Gangwar_hir) = 是
+[(Gangwar_hir_triggers) == null]($Gangwar_hir_triggers) = 入战触发,续战触发
+[(Gangwar_hir_EquipmentSuit) == null]($Gangwar_hir_EquipmentSuit) = 打红
+
+
+
+//设置菜单
+[if] (Update_date) != (update_date) && (Gangwar_config) == ture
+    //更新日志弹窗
+    @js alert("(update_date)更新说明：\n重写大部分NPC判断代码\n【帮战结束】增加判断激活该触发角色的功能")
+    #select ($Gangwar_update) = 是否需要更新帮战触发,是|否,(Gangwar_update)
+
+#input ($Gangwar_name) = 帮派名称,(Gangwar_name)
+#select ($Gangwar_report) = <hig>以下选项为<hio>橙</hio>、<hir>红</hir>通用设置</hig><br/>&nbsp*&nbsp是否启用帮战语音播报,是|否,(Gangwar_report)
+#select ($Gangwar_push) = 是否启用帮战远程推送,是|否,(Gangwar_push)
+#select ($Gangwar_dp) = 是否启用帮战帝魄查询,是|否,(Gangwar_dp)
+#select ($Gangwar_dp_print) = 是否打印帝魄查询信息,是|否,(Gangwar_dp_print)
+#select ($Gangwar_dp_fy) = 帝魄查询信息发送频道,组队|帮派,(Gangwar_dp_fy)
+#select ($Gangwar_monitor) = 是否启用帮战技能监控,是|否,(Gangwar_monitor)
+#select ($Gangwar_monitor_print) = 是否打印技能监控信息,是|否,(Gangwar_monitor_print)
+#select ($Gangwar_monitor_fy) = 技能监控信息发送频道,组队|帮派,(Gangwar_monitor_fy)
+#input ($Gangwar_monitor_name) = 技能监控忽略控制工具人名字,(Gangwar_monitor_name)
+#input ($Gangwar_specify_objects) = 指定对象激活自动帮战（多个名字用英文逗号分隔，默认角色本身）,(Gangwar_specify_objects)
+#input ($Gangwar_specify_objects_end) = 指定对象关闭自动帮战（多个名字用英文逗号分隔，默认角色本身）,(Gangwar_specify_objects_end)
+#input ($Gangwar_waittime) = 等待多久前往目的地(为减少错误不建议缩短时间),(Gangwar_waittime)
+#select ($Gangwar_autopfm_0) = 帮战结束后是否启用自动施法,是|否,(Gangwar_autopfm_0)
+#input ($Gangwar_end) = 帮战结束后动作,(Gangwar_end)
+
+#select ($Gangwar_hio) = <hio>以下选项为武当橙专用设置</hio><br/>&nbsp*&nbsp是否参加武当橙帮战,是|否,(Gangwar_hio)
+#select ($Gangwar_autopfm) = 是否使用自动施法,是|否,(Gangwar_autopfm)
+#input ($Gangwar_hio_EquipmentSuit) = 需要更换的打橙装备套装名,(Gangwar_hio_EquipmentSuit)
+#select ($Gangwar_npchp) = 是否启用血量监控（默认NPC血量低于60%触发）,是|否,(Gangwar_npchp)
+#input ($Gangwar_perform) = 自动施法需要禁用的技能(填写技能ID，多个技能请用半角逗号分隔，帮战结束或者刷新游戏会重新启用),(Gangwar_perform)
+#input ($Gangwar_hio_triggers) = 关闭触发(多个触发名字用半角逗号隔开),(Gangwar_hio_triggers)
+#input ($Gangwar_waitkill) = 等多久开始叫杀(计时结束检测张三丰武器，如未卸下则延后叫杀),(Gangwar_waitkill)
+#select ($Gangwar_unloadweapon) = NPC血量低于60%或满伤脱战是否需要卸下武器（与脱战剑技冲突）,是|否,(Gangwar_unloadweapon)
+#input ($Gangwar_run) = 满伤脱战使用技能(填写技能ID，如凌波、隐杀，昏迷类只对血量高于60%的NPC使用),(Gangwar_run)
+#select ($Gangwar_power) = 大佬模式或菜鸡模式(大佬按顺序叫杀，菜鸡默认跟随昏迷buff叫杀),大佬|菜鸡,(Gangwar_power)
+#select ($Gangwar_nei_0) =卸载或更换内功只能二选一<br/>&nbsp*&nbsp 打橙是否卸载内功,是|否,(Gangwar_nei_0)
+#input ($Gangwar_nei_1) = 打橙更换内功(填写武学ID),(Gangwar_nei_1)
+
+#select ($Gangwar_hir) = <hir>以下选项为华山红专用设置</hir><br/>&nbsp*&nbsp是否参加华山红帮战,是|否,(Gangwar_hir)
+#input ($Gangwar_hir_EquipmentSuit) = 需要更换的打红装备套装名,(Gangwar_hir_EquipmentSuit)
+#input ($Gangwar_hir_triggers) = 关闭触发(多个触发名字用半角逗号隔开),(Gangwar_hir_triggers)
+
+[if] (Gangwar_config) != null
+    #select ($default) = <hib>以下选项每次只能三选一，但如无需要请忽略</hib><br/>&nbsp*&nbsp是否恢复默认状态<hib>(不改变设置，仅恢复至被激活前的状态)</hib>,是|否,(default)
+    #select ($initialize) = 是否初始化系统<hib>(清除设置，重置帮战触发)</hib>,是|否,(initialize)
+    #select ($update) = 是否重置触发<hib>(删除帮战触发，重新导入)</hib>,是|否,(update)
+#config
+
+[if] (Gangwar_update) == 是 && (Update_date) != (update_date)
+    [while] (n) < 10
+        @js ($triggers) = '(triggers_delete)'.split(",")[(n)]
+        @js unsafeWindow.TriggerCenter.remove("(triggers)")
+        @js ($triggers) = '(triggers_Import)'.split(",")[(n)]
+        @js Server.importTrigger("(triggers)")
+        ($n) = (n) + 1
+        @wait 1000
+    ($Update_date) = (update_date)
+[if] (default) == 是 && (initialize) != 是 && (update) != 是
+    ($Gangwar) = off
+    @on 帮战开始
+    @on 帮战结束
+    @off 帮战轮回
+    @off 帮战叫杀
+    @off 血量监控
+    @off 技能监控
+    @off 帝魄记录
+    @off 帝魄查询
+    @off 橙满伤
+    @off 红满伤
+    @js alert("已恢复至默认状态，如果帮战尚未结束可手动发送关键词进行触发")
+    [exit]
+[else if] (default) != 是 && (initialize) == 是 && (update) != 是
+    ($Gangwar) = off
+    ($Gangwar_config) = null
+    ($Gangwar_push) = null
+    ($Gangwar_report) = null
+    ($Gangwar_end) = null
+    ($Gangwar_dp) = null
+    ($Gangwar_monitor) = null
+    ($Gangwar_waittime) = null
+    ($Gangwar_autopfm_0) = null
+    ($Gangwar_dp_fy) = null
+    ($Gangwar_monitor_fy) = null
+    ($Gangwar_dp_print) = null
+    ($Gangwar_monitor_print) = null
+    ($Gangwar_specify_objects) = null
+    ($Gangwar_specify_objects_end) = null
+    ($Gangwar_hio) = null
+    ($Gangwar_run) = null
+    ($Gangwar_nei_0) = null
+    ($Gangwar_nei_1) = null
+    ($Gangwar_npchp) = null
+    ($Gangwar_power) = null
+    ($Gangwar_waitkill) = null
+    ($Gangwar_autopfm) = null
+    ($Gangwar_perform) = null
+    ($Gangwar_unloadweapon) = null
+    ($Gangwar_hio_triggers) = null
+    ($Gangwar_hio_EquipmentSuit) = null
+    ($Gangwar_hir) = null
+    ($Gangwar_hir_triggers) = null
+    ($Gangwar_hir_EquipmentSuit) = null
+    [while] (n) < 10
+        @js ($triggers) = '(triggers_delete)'.split(",")[(n)]
+        @js unsafeWindow.TriggerCenter.remove("(triggers)")
+        @js ($triggers) = '(triggers_Import)'.split(",")[(n)]
+        @js Server.importTrigger("(triggers)")
+        ($n) = (n) + 1
+        @wait 1000
+    @js alert("初始化完成，请重新设置")
+    [exit]
+[else if] (default) != 是 && (initialize) != 是 && (update) == 是
+    [while] (n) < 10
+        @js ($triggers) = '(triggers_delete)'.split(",")[(n)]
+        @js unsafeWindow.TriggerCenter.remove("(triggers)")
+        @js ($triggers) = '(triggers_Import)'.split(",")[(n)]
+        @js Server.importTrigger("(triggers)")
+        ($n) = (n) + 1
+        @wait 1000
+    [exit]
+[else if] (initialize) == 是 && (default) == 是 && (update) == 是
+    ($Gangwar_config) = null
+    @js alert("三选一冲突，本次设置无效，所有设置重置！")
+    [exit]
+[else if] (initialize) != 是 && (default) == 是 && (update) == 是
+    ($Gangwar_config) = null
+    @js alert("三选一冲突，本次设置无效，所有设置重置！")
+    [exit]
+[else if] (initialize) == 是 && (default) != 是 && (update) == 是
+    ($Gangwar_config) = null
+    @js alert("三选一冲突，本次设置无效，所有设置重置！")
+    [exit]
+[else if] (initialize) == 是 && (default) == 是 && (update) != 是
+    ($Gangwar_config) = null
+    @js alert("三选一冲突，本次设置无效，所有设置重置！")
+    [exit]
+[if] (Gangwar_nei_1) != null && (Gangwar_nei_0) == 是
+    ($Gangwar_config) = null
+    @js alert("检测到更换内功和卸载内功选项冲突，请重新设置")
+    [exit]
+[if] (Gangwar_autopfm) == 是 && (Gangwar_perform) == null
+    @js alert("检测到你启用了自动施法却没有添加需要禁用的技能ID，如果你确定没有会影响帮派战的技能（如控制类技能）请忽略这条消息")
+[if] (Gangwar_config) == null
+    ($Percent_2) = 0
+    ($Percent_1) = 0
+    ($Percent_bang) = 0
+    ($Gangwar_config) = ture
+    ($Update_date) = (update_date)
+    [(Player) == null]($Player) = (:name)
+    [while] (n) < 10
+        @js ($triggers) = '(triggers_delete)'.split(",")[(n)]
+        @js unsafeWindow.TriggerCenter.remove("(triggers)")
+        @js ($triggers) = '(triggers_Import)'.split(",")[(n)]
+        @js Server.importTrigger("(triggers)")
+        ($n) = (n) + 1
+        @wait 1000

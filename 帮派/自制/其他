@@ -1,0 +1,42 @@
+// ~silent
+[(MHTriggers)==null]($MHTriggers)=*起手*,*九阴*,*无缝*
+#input ($MHTriggers)=关闭触发(多个触发名字用英文逗号隔开),(MHTriggers)
+#config
+
+@cmdDelay 500
+stopstate
+@toolbar jh
+@await 500
+// 隐藏玩家列表
+setting off_plist 1
+// 关闭自动出招
+setting auto_pfm 0;
+//关闭自动攻击
+$stoppfm
+
+//脱掉所有装备和技能
+$eq 0
+@await 1000
+$eqskill 0
+@await 1000
+$eq 华山红
+@on 红自爆
+@on 红满伤
+
+//关闭触发
+[if] (MHTriggers) != null
+  @js ($tgs)=var ts=("\""+"(MHTriggers)"+"\"").replace(/，/g,",");ts.replace(/,/g,"\",\"").split(",")
+  @js ($tl)=[(tgs)].length
+  ($num)=0
+  [while] (num)<(tl)
+    @js ($t)=[(tgs)][(num)]
+    @js ToRaid.perform(`//~silent\n@off (t)`)
+    ($num)=(num)+1
+@await 1000
+
+[while] (:room) != 华山派-客厅
+  $to 华山派-客厅
+  @await 500
+[if] {r独孤败天}? != null
+  @await 1000
+  kill {r独孤败天}?

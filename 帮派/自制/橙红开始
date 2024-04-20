@@ -1,0 +1,121 @@
+// 自动打橙流程
+@cmdDelay 500
+
+[if] (:room 副本区域,忧愁谷,襄阳城,古大陆,皇城) == true || (:state)==领悟 || (:state)==推演
+  [exit]
+
+// 获取内置出招并储存
+@toolbar score
+@toolbar setting
+@js $(`span[for=custom]`).click()
+@js ($pfm) = document.getElementById("auto_pfm").value
+// 删内置出招
+setting auto_pfm 0;
+
+[if] (content) == 即刻起开始进攻武当
+  //********使用前请根据自己需要，自行修改以下几个参数********
+  //第几波号令才开打就填几
+  ($haoling) = 0
+  //是否关闭自动出招，0为关闭，1为打开
+  ($autopfm) = 0
+  //********使用前请根据自己需要，自行修改以上几个参数********
+  setting off_plist 1
+  @stopSSAuto
+  stopstate
+  //这里可以自己修改为换技能装备的代码
+  $eq 1
+  @await 2000
+  $eqskill 1
+  @on 橙满伤
+  @on 帮战翻车
+  @on 帮战结束
+  @off 九血起手
+  @off 无缝武当缠
+  $wait 5000
+  @renew
+@wait 1000
+[if] (autopfm) = 0
+    $stoppfm
+[else]
+    $startpfm
+[while] (:room) != 武当派-后山小院
+    $to 武当派-后山小院
+    @await 2000
+@print 等待开战
+($id_1) = {r武当派长老}?
+($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+($id_bang) = {r张三丰}?
+//长老血量低于1950W，掌门低于4950W时自动叫杀最下面的长老。如果不想监控血量，也可以改成等待指定时间后叫杀。
+//@until (:hp (id_2)) < 19500000 || (:hp (id_1)) < 19500000 || (:hp (id_bang)) < 49500000
+@wait 60000
+($id_1) = {r武当派长老}?
+($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+[if] "(id_2)" != "null"
+    kill (id_2);kill (id_2)
+    ($MPnpc) = (id_2)
+[else if] "(id_2)" == "null" && "(id_1)" != "null"
+    kill (id_1);kill (id_1)
+    ($MPnpc) = (id_1)
+[else]
+    kill (id_bang);kill (id_bang)
+    ($MPnpc) = (id_bang)
+
+
+
+stopstate
+
+
+
+
+
+// 开打红触发、关自动出招
+@on 自爆
+@on 红满伤
+$stoppfm
+
+// 更换套装
+//脱掉其他装备：鞋2、头3、披风4、项链6、饰品7、护腕8、腰带9
+uneq (:eq2);uneq (:eq3);uneq (:eq4);uneq (:eq6);uneq (:eq7);uneq (:eq8);uneq (:eq9)
+//换软猬甲（必需）、疤面（如果有）
+[if] {b软猬甲}? != null
+  eq {b软猬甲}?
+[if] {b疤面面具}? != null
+  eq {b疤面面具}?
+[if] {b曲洋的琴环}? != null
+  eq {b曲洋的琴环}?
+[if] {b赵敏的戒指}? != null
+  eq {b赵敏的戒指}?
+[if] {b阴阳环}? != null
+  eq {b阴阳环}？
+[if] {b冰魄银针}? != null
+  eq {b冰魄银针}?
+[if] {b逆鳞手环}? != null
+  eq {b逆鳞手环}?
+[if] {b彼岸花}? != null
+  eq {b彼岸花}?
+//换打红武器，优先自动换绣花针、橙君子剑
+[if] {b东方不败的绣花针}? != null
+    eq {b东方不败的绣花针}?
+[else if] {b君子剑o}? != null
+    eq {b君子剑o}?
+
+[while] (:room) != 华山派-客厅
+  $to 华山派-客厅
+  @await 200
+@await 2000
+
+[if] {r独孤败天}? != null
+  kill {r独孤败天}
+
+@until {r独孤败天的尸体}? != null
+
+setting auto_pfm (pfm);
+
+[while] (:room) != 扬州城-武庙
+  $to 扬州城-武庙
+  @await 200
+@off 自爆
+@off 关自爆
+@renew
+@await 3000
+$zdwk

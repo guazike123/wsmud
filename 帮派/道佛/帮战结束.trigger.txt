@@ -1,0 +1,140 @@
+//~silent
+//五区-道佛
+//频道：帮派
+// 关键字：结束帮派副本|获得了最终胜利|全部成员撤退
+// 只支持武当、华山的帮战
+[if] (:room 副本区域,忧愁谷,襄阳城,古大陆,皇城,运镖) == true || (:state)==推演 || (Gangwar) == off
+    [exit]
+
+($BPZStart) = null
+($BPZEnd) = true
+($Gangwar) = off
+($MPnpc) = null
+($Percent_1) = 0
+($Percent_2) = 0
+($Percent_bang) = 0
+($hour) = (:hour)
+($minute) = (:minute)
+($second) = (:second)
+
+//激活对象判断
+[if] (Gangwar_specify_objects_end) != null
+    ($n) = 0
+    @js ($specify_objects_l) = '(Gangwar_specify_objects_end)'.split(",").length
+    [while] true
+        @js ($specify_objects_name) = '(Gangwar_specify_objects_end)'.split(",")[(n)]
+        [if] (name) == (specify_objects_name) || (name) == (:name) || (name) == 帮派管理
+            pty (name)于(hour)点(minute)分(second)秒关闭(Gangwar_name)的自动帮战系统。
+            [(Gangwar_report) == 是] $tts (name)于(hour)点(minute)分(second)秒关闭(Gangwar_name)的自动帮战系统。
+            [(Gangwar_push) == 是] @push (name)于(hour)点(minute)分(second)秒关闭(Gangwar_name)的自动帮战系统。
+            [break]
+        [if] (n) == (specify_objects_l)
+            ($Gangwar) = off
+            pty (name)于(hour)点(minute)分(second)秒尝试关闭(Gangwar_name)的自动帮战系统，非指定激活对象停止本次自动帮战系统运行。
+            [(Gangwar_report) == 是] $tts (name)于(hour)点(minute)分(second)秒尝试关闭(Gangwar_name)的自动帮战系统，非指定激活对象停止本次自动帮战系统运行。
+            [(Gangwar_push) == 是] @push (name)于(hour)点(minute)分(second)秒尝试关闭(Gangwar_name)的自动帮战系统，非指定激活对象停止本次自动帮战系统运行。
+            [exit]
+        @await 500
+        ($n) = (n) + 1
+[else]
+    pty (name)于(hour)点(minute)分(second)秒关闭(Gangwar_name)的自动帮战系统。
+    [(Gangwar_report) == 是] $tts (name)于(hour)点(minute)分(second)秒关闭(Gangwar_name)的自动帮战系统。
+    [(Gangwar_push) == 是] @push (name)于(hour)点(minute)分(second)秒关闭(Gangwar_name)的自动帮战系统。
+
+@js $('#Gangwar').remove()
+@js $(`.state-bar`).before($(`<div id=Gangwar>🛡️本次帮派战于(hour)点(minute)分(second)秒结束</div>`).click(() => $('#Gangwar').remove()))
+
+@stop 橙满伤
+@stop 红满伤
+@stop 帮战开始
+@stop 帮战轮回
+@stop 帮战叫杀
+@stop 血量监控
+
+//信息显示设置开关
+[if] (Gangwar_kg10) == 开
+    setting no_message 1
+[else if] (Gangwar_kg10) == 关
+    setting no_message 0
+[if] (Gangwar_kg13) == 开
+    setting no_combatmsg 1
+[else if] (Gangwar_kg13) == 关
+    setting no_combatmsg 0
+[if] (Gangwar_kg14) == 开
+    setting no_mcmsg 1
+[else if] (Gangwar_kg14) == 关
+    setting no_mcmsg 0
+
+//橙——还原指定触发
+[if] (Hio_offT) != null
+    @js ($tgs)=var ts=("\""+"(Hio_offT)"+"\"").replace(/，/g,",");ts.replace(/,/g,"\",\"").split(",")
+    @js ($tl)=[(tgs)].length
+    ($num)=0
+    [while] (num)<(tl)
+        @js ($t)=[(tgs)][(num)]
+        @js ToRaid.perform(`@on (t)`);
+        ($num)=(num)+1
+    ($Hio_offT) = null
+//红——还原指定触发
+[if] (Hir_offT) != null
+    @js ($tgs)=var ts=("\""+"(Hir_offT)"+"\"").replace(/，/g,",");ts.replace(/,/g,"\",\"").split(",")
+    @js ($tl)=[(tgs)].length
+    ($num)=0
+    [while] (num)<(tl)
+        @js ($t)=[(tgs)][(num)]
+        @js ToRaid.perform(`@on (t)`);
+        ($num)=(num)+1
+    ($Hir_offT) = null
+
+@off 红满伤
+@off 橙满伤
+@off 帮战轮回
+@off 帮战叫杀
+@off 血量监控
+@off 技能监控
+[(Gangwar_autopfm_0) == 是] $startpfm
+[(Gangwar_autopfm_0) == 否] $stoppfm
+[(Gangwar_perform) != null]$startautopfm (Gangwar_perform);
+
+[if] (Gangwar_target) == 武当派
+    [while] (:room) != 武当派-后山小院
+        stopstate;relive
+        $to 武当派-后山小院
+        @await 2000
+[else if] (Gangwar_target) == 华山派
+    [while] (:room) != 华山派-客厅
+        stopstate;relive
+        $to 华山派-客厅
+        @await 2000
+[{r张三丰的尸体}? != null] get all from {r张三丰}?
+[{r(Name_1)的尸体}? != null] get all from {r(Name_1)}?
+[{r(Name_2)的尸体}? != null] get all from {r(Name_2)}?
+[{r独孤败天的尸体}? != null] get all from {r独孤败天}?
+[if] (Gangwar_nei_0) == 是 && (Gangwar_nei_1) == null
+    enable force (Gangwar_nei)
+[else if] (Gangwar_nei_0) == 否 && (Gangwar_nei_1) != null
+    enable force (Gangwar_nei)
+@wait 3000
+@tidyBag
+@renew
+$startallauto
+(Gangwar_end)
+recordGains->silent
+[if] (:gains) != null
+    ($info_gains) = 战利品列表如下：<br>(:gains)
+[else]
+    ($info_gains) = 战利品：<ord>无</ord><br>
+@toolbar pack
+($Gangwar_aftermoney)=(:money)
+($tongban) = (Gangwar_aftermoney) - (Gangwar_beforemoney)
+($income)=(tongban)/10000
+[if] (Gangwar_hio_triggers) != null && (Gangwar_target) == 武当派
+    ($inof_triggers) = 启动触发：<hic>(Gangwar_hio_triggers)</hic><br>启动自动Boss及喜宴......
+[else if] (Gangwar_hio_triggers) == null && (Gangwar_target) == 武当派
+    ($inof_triggers) = 启动自动Boss及喜宴......
+[if] (Gangwar_hir_triggers) != null && (Gangwar_target) == 华山派
+    ($inof_triggers) = 启动触发：<hic>(Gangwar_hir_triggers)</hic><br>启动自动Boss及喜宴......
+[else if] (Gangwar_hir_triggers) == null && (Gangwar_target) == 华山派
+    ($inof_triggers) = 启动自动Boss及喜宴......
+@js messageClear()
+@print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br>帮派战于<yel>(hour)点(minute)分(second)秒</yel>结束<br>(info_gains)黄金收益：<hiy>(income)</hiy> 两<br><hiw>处理方案：</hiw><br>(inof_triggers)<br><hiw>===================</hiw>

@@ -1,0 +1,73 @@
+// ~silent
+// raid.flow
+// 一区苦茶子
+
+[(MHskill)==null]($MHskill)=enable force jiuyinshengong
+[(MHTriggers)==null]($MHTriggers)=起手,血刀九阴,倚天九阴,血剑起手,混沌剑心,混沌九阴,九阴天魔,天地冷却
+[if] (:weapon sword) == false && {b东方不败的绣花针}? == null && {b君子剑o}? == null
+  #input ($MHweapon)=未检测到剑类武器，请设置摸红武器id,(MHweapon)
+#input ($MHskill)=摸红换技能命令(多条命令用英文;隔开),(MHskill)
+#input ($MHTriggers)=关闭触发(多个触发名字用英文逗号隔开),(MHTriggers)
+#config
+
+@cmdDelay 500
+stopstate
+@toolbar jh
+@await 500
+// 隐藏玩家列表
+@js $(`span[command=setting]`).click();
+@await 200
+@js $(`span[for=setting]`).click();
+@await 200
+@js var i=$(`div[for=off_plist]`).find(`.switch-text`).text();if(i=='关'){$(`div[for=off_plist]`).find(`.switch-button`).click()};
+@await 200
+// 关闭自动出招
+setting auto_pfm 0;
+@js $(`span[for=custom]`).click();
+@js var i=$(`div[for=auto_pfm]`).find(`.switch-text`).text();if(i=='开'){$(`div[for=auto_pfm]`).find(`.switch-button`).click()};
+$stoppfm
+//脱掉其他装备：鞋2、头3、披风4、项链6、饰品7、护腕8、腰带9
+uneq (:eq2);uneq (:eq3);uneq (:eq4);uneq (:eq6);uneq (:eq7);uneq (:eq8);uneq (:eq9)
+//换软猬甲（必需）、疤面（如果有）
+[if] {b软猬甲}? != null
+  eq {b软猬甲}?
+[if] {b疤面面具}? != null
+  eq {b疤面面具}?
+[if] {b曲洋的琴环}? != null
+  eq {b曲洋的琴环}?
+[if] {b赵敏的戒指}? != null
+  eq {b赵敏的戒指}?
+[if] {b阴阳环}? != null
+  eq {b阴阳环}？
+[if] {b冰魄银针}? != null
+  eq {b冰魄银针}?
+[if] {b逆鳞手环}? != null
+  eq {b逆鳞手环}?
+[if] {b彼岸花}? != null
+  eq {b彼岸花}?
+//换打红武器，优先自动换绣花针、橙君子剑
+[if] (:weapon sword) != true
+  [if] {b东方不败的绣花针}? != null
+    eq {b东方不败的绣花针}?
+  [else if] {b君子剑o}? != null
+    eq {b君子剑o}?
+  [else]
+    eq (MHweapon)
+@on 红*
+@off 起手式
+@off 无缝控
+[if] (MHTriggers) != null
+  @js ($tgs)=var ts=("\""+"(MHTriggers)"+"\"").replace(/，/g,",");ts.replace(/,/g,"\",\"").split(",")
+  @js ($tl)=[(tgs)].length
+  ($num)=0
+  [while] (num)<(tl)
+    @js ($t)=[(tgs)][(num)]
+    @js ToRaid.perform(`//~silent\n@off (t)`);
+    ($num)=(num)+1
+@await 3000
+[while] (:room) != 华山派-客厅
+  $to 华山派-客厅
+  @await 500
+[if] {r独孤败天}? != null
+  @await 1000
+  kill {r独孤败天}?

@@ -1,0 +1,272 @@
+//~silent
+// 五区-道佛
+//2022-01-15更新日志：优化伤害统计信息显示
+// 伤害百分比：11（少林、武当只需要9）
+// 武当派长老|张三丰 百分比 11
+($id_bang) = {r邋遢真人}?
+($id_1) = {r武当派长老}?
+($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+[if] (:room) == 武当派-后山小院 && (:combating) == true && (Gangwar_power) == 大佬
+    [if] "(id)" == "(id_2)"
+        kill (id_1)[2]
+        ($MPnpc) = (id_1)
+        ($Percent_2) = (percent)
+        ($name) = (:findName (id_1))
+        pty 武当派长老 『(Name_2)』 造成伤害：(Percent_2)
+        [if] (:hp (id_1)) < 14000000
+            [(Gangwar_autopfm) == 是]$stoppfm
+            [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+                uneq (Gangwar_weapon)
+                @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，卸载武器-暂停施法`)
+            [else]
+                @js $('#Gangwar').html(`⚠️攻击目标：<hio>武当派长老</hio> <hir>(name)</hir> 血量过低，暂停施法`)
+            @until (:hp (id_1)) >= 16000000 || {(name)的尸体}? != null
+            ($id_bang) = {r邋遢真人}?
+            ($id_1) = {r武当派长老}?
+            ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+            [if] (:hp (id_1)) >= 16000000 && "(id)" != "(id_1)"
+                [(:eq0) == null]eq (Gangwar_weapon)
+                [(Gangwar_autopfm) == 是]$startpfm
+                pty ⚔️开始攻击：武当派长老 (name)
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+            [else if] {(name)的尸体}? != null && "(id_bang)" != "null"
+                kill (id_bang)[2]
+                ($MPnpc) = (id_bang)
+                [(:eq0) == null]eq (Gangwar_weapon)
+                [(Gangwar_autopfm) == 是]$startpfm
+                pty ⚔️开始攻击：邋遢真人 张三丰
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+        [else if] (:hp (id_1)) >= 14000000
+            pty ⚔️开始攻击：武当派长老 (name)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+    [else if] "(id)" == "(id_1)" && "(id)" == "(ID_2)"
+        kill (id_bang)[2]
+        ($MPnpc) = (id_bang)
+        ($Percent_2) = (percent)
+        pty 武当派长老 『(Name_2)』 造成伤害：(Percent_2)
+        [if] (:hp (id_bang)) < 30000000
+            [(Gangwar_autopfm) == 是]$stoppfm
+            [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+                uneq (Gangwar_weapon)
+                @js $('#Gangwar').html(`⚠️攻击目标：<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，卸载武器-暂停施法`)
+            [else]
+                @js $('#Gangwar').html(`⚠️攻击目标：<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，暂停施法`)
+            @until (:hp (id_bang)) >= 40000000 || {张三丰的尸体}? != null
+            [if] {张三丰的尸体}? != null
+                [(:eq0) == null]eq (Gangwar_weapon)
+                [(Gangwar_autopfm) == 是]$startpfm
+                @js $('#Gangwar').html(`⚔️攻击门派：<hio>武当派</hio> ☠️<hir>灭门</hir>☠️`)
+            [else]
+                [(:eq0) == null]eq (Gangwar_weapon)
+                [(Gangwar_autopfm) == 是]$startpfm
+                pty ⚔️开始攻击：邋遢真人 张三丰
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+        [else if] (:hp (id_bang)) >= 30000000
+            pty ⚔️开始攻击：邋遢真人 张三丰
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(id)" == "(id_1)" && "(id)" == "(ID_1)"
+        kill (id_bang)[2]
+        ($MPnpc) = (id_bang)
+        ($Percent_1) = (percent)
+        pty 武当派长老 『(Name_1)』 造成伤害：(Percent_1)
+        [if] (:hp (id_bang)) < 30000000
+            [(Gangwar_autopfm) == 是]$stoppfm
+            [if] (Gangwar_unloadweapon) == 是 && (:eq0) != null
+                uneq (Gangwar_weapon)
+                @js $('#Gangwar').html(`⚠️攻击目标：<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，卸载武器-暂停施法`)
+            [else]
+                @js $('#Gangwar').html(`⚠️攻击目标：<hio>邋遢真人</hio> <hir>张三丰</hir> 血量过低，暂停施法`)
+            @until (:hp (id_bang)) >= 40000000 || {张三丰的尸体}? != null
+            [if] {张三丰的尸体}? != null
+                [(:eq0) == null]eq (Gangwar_weapon)
+                [(Gangwar_autopfm) == 是]$startpfm
+                @js $('#Gangwar').html(`⚔️攻击门派：<hio>武当派</hio> ☠️<hir>灭门</hir>☠️`)
+            [else]
+                [(:eq0) == null]eq (Gangwar_weapon)
+                [(Gangwar_autopfm) == 是]$startpfm
+                pty ⚔️开始攻击：邋遢真人 张三丰
+                @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+        [else if] (:hp (id_bang)) >= 30000000
+            pty ⚔️开始攻击：邋遢真人 张三丰
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(id)" == "(id_bang)"
+        ($MPnpc) = null
+        ($Percent_bang) = (percent)
+        $stoppfm
+        @off 帮战叫杀
+        //伤害信息显示
+        @js ($fy) = "帮战伤害报告\n邋遢真人 『张三丰』 造成伤害：(Percent_bang)\n武当派长老 『(Name_1)』 造成伤害：(Percent_1)\n武当派长老 『(Name_2)』 造成伤害：(Percent_2)"
+        pty (fy)
+        @js messageClear()
+        @js $('#Gangwar').html(`⚔️<hiy>指标已满，准备脱战......</hiy>`)
+        @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br><hio>邋遢真人</hio> <hir>张三丰</hir> 造成伤害：<hiy>(Percent_bang)</hiy><br><hio>武当派长老</hio> <hir>(Name_1)</hir> 造成伤害：<hiy>(Percent_1)</hiy><br><hio>武当派长老</hio> <hir>(Name_2)</hir> 造成伤害：<hiy>(Percent_2)</hiy><br> <hiw>处理方案：</hiw><br>准备脱战，等待帮派战结束......<br><hiw>===================</hiw>
+        [while] (Gangwar_unloadweapon) == 是
+            [(:eq0) == null] [break]
+            uneq (Gangwar_weapon)
+            @await 3500
+        [while] (:room) == 武当派-后山小院
+            ($id_bang) = {r邋遢真人}?
+            ($id_1) = {r武当派长老}?
+            ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+            [if] "(id_2)" != "null" && (:status faint,(id_2)) == true
+                kill (id_2)[2]
+                pty 武当派长老 (Name_2) 处于昏迷状态，尝试叫杀脱战
+                @js $('#Gangwar').html(`<hio>武当派长老</hio> <hir>(Name_2)</hir> 处于昏迷状态，尝试叫杀脱战`)
+            [else if] "(id_1)" != "null" && (:status faint,(id_1)) == true
+                kill (id_1)[2]
+                pty 武当派长老 (Name_1) 处于昏迷状态，尝试叫杀脱战
+                @js $('#Gangwar').html(`<hio>武当派长老</hio> <hir>(Name_1)</hir> 处于昏迷状态，尝试叫杀脱战`)
+            [else if] "(id_bang)" != "null" && (:status faint,(id_bang)) == true
+                kill (id_bang)[2]
+                pty 邋遢真人 张三丰 处于昏迷状态，尝试叫杀脱战
+                @js $('#Gangwar').html(`<hio>邋遢真人</hio> <hir>张三丰</hir> 处于昏迷状态，尝试叫杀脱战`)
+            go south
+            [(:room) != 武当派-后山小院] [break]
+            [if] (Gangwar_run) != null
+                @until (:cd (Gangwar_run)) == false
+                [if] "(id_2)" != "null" && (:hp (id_2)) > 16000000
+                    kill (id_2)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 武当派长老 (Name_2) 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>武当派长老</hio> <hir>(Name_2)</hir> 以脱战`)
+                [else if] "(id_1)" != "null" && (:hp (id_1)) > 16000000 && "(id_1)" == "(ID_2)"
+                    kill (id_1)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 武当派长老 (Name_2) 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>武当派长老</hio> <hir>(Name_2)</hir> 以脱战`)
+                [else if] "(id_1)" != "null" && (:hp (id_1)) > 16000000 && "(id_1)" == "(ID_1)"
+                    kill (id_1)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 武当派长老 (Name_1) 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>武当派长老</hio> <hir>(Name_1)</hir> 以脱战`)
+                [else if] "(id_bang)" != "null" && (:hp (id_bang)) > 40000000
+                    kill (id_bang)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 邋遢真人 张三丰 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>邋遢真人</hio> <hir>张三丰</hir> 以脱战`)
+            go south
+            [(:room) != 武当派-后山小院] [break]
+            @await 3500
+        @until (:combating) == false
+        go north
+        [while] (:room) != 武当派-后山小院
+            $to 武当派-后山小院
+            @await 5000
+        pty 脱战成功
+        [(:eq0) == null]eq (Gangwar_weapon)
+        @js $('#Gangwar').html(`<hiy>脱战成功 等待结束......</hiy>`)
+[else if] (:room) == 武当派-后山小院 && (:combating) == true && (Gangwar_power) == 菜鸡
+    [if] "(id)" == "(id_2)"
+        ($Percent_2) = (percent)
+        pty 武当派长老 『(Name_2)』 造成伤害：(Percent_2)
+        [if] "(id_1)" != "null" && (Percent_1) == 0
+            kill (id_1)[2]
+            ($MPnpc) = (id_1)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_1)</hir>`)
+        [else if] "(id_bang)" != "null" && (Percent_bang) == 0
+            kill (id_bang)[2]
+            ($MPnpc) = (id_bang)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(id)" == "(id_1)" && "(id)" == "(ID_2)"
+        ($Percent_2) = (percent)
+        pty 武当派长老 『(Name_2)』 造成伤害：(Percent_2)
+        [if] "(id_bang)" != "null" && (Percent_bang) == 0
+            kill (id_bang)[2]
+            ($MPnpc) = (id_bang)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if] "(id)" == "(id_1)" && "(id)" == "(ID_1)"
+        ($Percent_1) = (percent)
+        pty 武当派长老 『(Name_1)』 造成伤害：(Percent_1)
+        [if] "(id_2)" != "null" && (Percent_2) == 0
+            kill (id_2)[2]
+            ($MPnpc) = (id_2)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+        [else if] "(id_bang)" != "null" && (Percent_bang) == 0
+            kill (id_bang)[2]
+            ($MPnpc) = (id_bang)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>邋遢真人</hio> <hir>张三丰</hir>`)
+    [else if]"(id)" == "(id_bang)"
+        ($Percent_bang) = (percent)
+        pty 邋遢真人 『张三丰』 造成伤害：(Percent_bang)
+        [if] "(id_1)" != "null" && (Percent_1) == 0
+            kill (id_1)[2]
+            ($MPnpc) = (id_1)
+            ($name) = (:findName (id_1))
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(name)</hir>`)
+        [else if] "(id_2)" != "null" && (Percent_2) == 0
+            kill (id_2)[2]
+            ($MPnpc) = (id_2)
+            @js $('#Gangwar').html(`⚔️开始攻击：<hio>武当派长老</hio> <hir>(Name_2)</hir>`)
+    [if] "(id_2)" != "null" && "(id_1)" != "null"&& "(id_bang)" != "null"
+        [(Percent_2) > 0 && (Percent_1) > 0 && (Percent_bang) > 0] ($gangwar_hio) = true
+    [else if] "(id_2)" == "null" && "(id_1)" != "null" && "(id_bang)" != "null" && "(id_1)" == "(ID_2)"
+        [(Percent_2) > 0 && (Percent_bang) > 0] ($gangwar_hio) = true
+    [else if] "(id_2)" == "null" && "(id_1)" != "null"&& "(id_bang)" != "null" && "(id_1)" == "(ID_1)"
+        [(Percent_1) > 0 && (Percent_bang) > 0] ($gangwar_hio) = true
+    [else if] "(id_2)" == "null" && "(id_1)" == "null"&& "(id_bang)" != "null"
+        [(Percent_bang) > 0] ($gangwar_hio) = true
+    [if] (gangwar_hio) == true
+        ($MPnpc) = null
+        $stoppfm
+        @off 帮战叫杀
+        //伤害信息显示
+        @js ($fy) = "帮战伤害报告\n邋遢真人 『张三丰』 造成伤害：(Percent_bang)\n武当派长老 『(Name_1)』 造成伤害：(Percent_1)\n武当派长老 『(Name_2)』 造成伤害：(Percent_2)"
+        pty (fy)
+        @js messageClear()
+        @js $('#Gangwar').html(`⚔️<hiy>指标已满，准备脱战......</hiy>`)
+        @print <hiw>角色：</hiw><br>(Player)<br><hiw>事件：</hiw><br><hio>邋遢真人</hio> <hir>张三丰</hir> 造成伤害：<hiy>(Percent_bang)</hiy><br><hio>武当派长老</hio> <hir>(Name_1)</hir> 造成伤害：<hiy>(Percent_1)</hiy><br><hio>武当派长老</hio> <hir>(Name_2)</hir> 造成伤害：<hiy>(Percent_2)</hiy><br> <hiw>处理方案：</hiw><br>准备脱战，等待帮派战结束......<br><hiw>===================</hiw>
+        [while] (Gangwar_unloadweapon) == 是
+            [(:eq0) == null] [break]
+            uneq (Gangwar_weapon)
+            @await 3500
+        [while] (:room) == 武当派-后山小院
+            ($id_bang) = {r邋遢真人}?
+            ($id_1) = {r武当派长老}?
+            ($id_2) = {r武当派长老}?# obj.id == "(id_1)" #
+            [if] "(id_2)" != "null" && (:status faint,(id_2)) == true
+                kill (id_2)[2]
+                pty 武当派长老 (Name_2) 处于昏迷状态，尝试叫杀脱战
+                @js $('#Gangwar').html(`<hio>武当派长老</hio> <hir>(Name_2)</hir> 处于昏迷状态，尝试叫杀脱战`)
+            [else if] "(id_1)" != "null" && (:status faint,(id_1)) == true
+                kill (id_1)[2]
+                pty 武当派长老 (Name_1) 处于昏迷状态，尝试叫杀脱战
+                @js $('#Gangwar').html(`<hio>武当派长老</hio> <hir>(Name_1)</hir> 处于昏迷状态，尝试叫杀脱战`)
+            [else if] "(id_bang)" != "null" && (:status faint,(id_bang)) == true
+                kill (id_bang)[2]
+                pty 邋遢真人 张三丰 处于昏迷状态，尝试叫杀脱战
+                @js $('#Gangwar').html(`<hio>邋遢真人</hio> <hir>张三丰</hir> 处于昏迷状态，尝试叫杀脱战`)
+            go south
+            [(:room) != 武当派-后山小院] [break]
+            [if] (Gangwar_run) != null
+                @until (:cd (Gangwar_run)) == false
+                [if] "(id_2)" != "null" && (:hp (id_2)) > 16000000
+                    kill (id_2)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 武当派长老 (Name_2) 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>武当派长老</hio> <hir>(Name_2)</hir> 以脱战`)
+                [else if] "(id_1)" != "null" && (:hp (id_1)) > 16000000 && "(id_1)" == "(ID_2)"
+                    kill (id_1)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 武当派长老 (Name_2) 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>武当派长老</hio> <hir>(Name_2)</hir> 以脱战`)
+                [else if] "(id_1)" != "null" && (:hp (id_1)) > 16000000 && "(id_1)" == "(ID_1)"
+                    kill (id_1)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 武当派长老 (Name_1) 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>武当派长老</hio> <hir>(Name_1)</hir> 以脱战`)
+                [else if] "(id_bang)" != "null" && (:hp (id_bang)) > 40000000
+                    kill (id_bang)[2]
+                    @perform (Gangwar_run)
+                    pty 尝试昏迷 邋遢真人 张三丰 以脱战
+                    @js $('#Gangwar').html(`尝试昏迷 <hio>邋遢真人</hio> <hir>张三丰</hir> 以脱战`)
+            go south
+            [(:room) != 武当派-后山小院] [break]
+            @await 3500
+        @until (:combating) == false
+        go north
+        [while] (:room) != 武当派-后山小院
+            $to 武当派-后山小院
+            @await 5000
+        pty 脱战成功
+        [(:eq0) == null]eq (Gangwar_weapon)
+        @js $('#Gangwar').html(`<hiy>脱战成功 等待结束......</hiy>`)

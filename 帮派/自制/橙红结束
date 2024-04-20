@@ -1,0 +1,42 @@
+// 频道：帮派
+// 关键字：获得了最终胜利|全部成员撤退
+// 只有武当橙、华山红。
+
+@off 橙红复活
+@off 橙红满伤
+
+[if] (:room) == 武当派-后山小院 || (:room) == 华山派-客厅
+  stopstate
+
+  ($place)=(:room)
+  [while] (:living) == false
+    relive;relive
+    @await 500
+  [while] (:room) != (place)
+    $to (place)
+    @await 500
+  @await 1000
+
+  $getall
+  @renew
+  @tidyBag
+  @await 2000
+  $to 住房-练功房
+  dazuo
+  @await 1000
+  @until (:state) != 打坐
+  @await 3000
+  [if] (:state)==练习
+    stopstate
+    $usezml 练习
+    @await 2000
+    $eq 练习
+    @await 2000
+    $eqskill 练习
+    @await 2000
+    [(:status food) == false && {b冰心丹}? != null]use {b冰心丹}?
+    [(:status fy) == false]use (:eq0)
+    dazuo
+  [else]
+    $zdwk
+    @recoverSSAuto
